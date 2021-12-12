@@ -5,6 +5,7 @@ Documentation     Orders robots from RobotSpareBin Industries Inc.
 ...               Embeds the screenshot of the robot to the PDF receipt.
 ...               Creates ZIP archive of the receipts and the images.
 Library           RPA.Robocorp.Vault
+Library           RPA.Dialogs
 
 *** Variables ***
 
@@ -69,4 +70,14 @@ Go to order another robot
     No Operation
 
 Create a ZIP file of the receipts
+    Confirmation dialog
     No Operation
+
+Confirmation dialog
+    Add icon    Warning
+    Add heading    Delete existing file?
+    Add submit buttons    buttons=No,Yes    default=Yes
+    ${result}=    Run dialog
+    IF    $result.submit == "Yes"
+        Log    Yes
+    END
