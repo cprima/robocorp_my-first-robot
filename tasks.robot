@@ -4,11 +4,14 @@ Documentation     Orders robots from RobotSpareBin Industries Inc.
 ...               Saves the screenshot of the ordered robot.
 ...               Embeds the screenshot of the robot to the PDF receipt.
 ...               Creates ZIP archive of the receipts and the images.
+Library           RPA.Robocorp.Vault
 
 *** Variables ***
 
 *** Tasks ***
 Order robots from RobotSpareBin Industries Inc
+    ${secret}=    Get Secret    credentials
+    Log    ${secret}[username]
     Open the robot order website
     ${orders}=    Get orders
     Log    ${orders}
