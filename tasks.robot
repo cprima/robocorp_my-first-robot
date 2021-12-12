@@ -6,6 +6,9 @@ Documentation     Orders robots from RobotSpareBin Industries Inc.
 ...               Creates ZIP archive of the receipts and the images.
 Library           RPA.Robocorp.Vault
 Library           RPA.Dialogs
+Library           RPA.HTTP
+Library           RPA.Tables
+Library           RPA.Browser.Selenium    auto_close=${FALSE}
 
 *** Variables ***
 
@@ -16,8 +19,8 @@ Order robots from RobotSpareBin Industries Inc
     Open the robot order website
     ${orders}=    Get orders
     Log    ${orders}
+    Close the annoying modal
     FOR    ${row}    IN    @{orders}
-        Close the annoying modal
         Fill the form    ${row}
         Preview the robot
         Submit the order
@@ -30,18 +33,18 @@ Order robots from RobotSpareBin Industries Inc
 
 *** Keywords ***
 Open the robot order website
+    Open Available Browser    https://robotsparebinindustries.com/#/robot-order
     No Operation
 
 Get orders
     #No Operation
-    &{row1}=    Create Dictionary    Order number=1    Head=1    Body=2    Legs=3    Address=Adress\ 123
-    &{row2}=    Create Dictionary    Order number=2    Head=4    Body=1    Legs=5    Address=Adress\ 456
-    @{LIST}=    Create List    ${row1}    ${row2}
-    Log    ${LIST}
-    [Return]    ${LIST}
+    Download    https://robotsparebinindustries.com/orders.csv    overwrite=True
+    ${orders}=    Read table from CSV    orders.csv
+    Log    Found columns: ${orders.columns}
+    [Return]    ${orders}
 
 Close the annoying modal
-    No Operation
+    Click Button    Yep
 
 Fill the form
     [Arguments]    ${row}
