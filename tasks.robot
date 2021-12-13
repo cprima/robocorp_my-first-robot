@@ -18,23 +18,8 @@ Library           RPA.FileSystem
 
 *** Tasks ***
 Order robots from RobotSpareBin Industries Inc
-    ${secret}=    Get Secret    credentials
     ${ASSETS}=    Get Secret    assets
-    Log    ${secret}[username]
-    ${dir_exists}=    Does Directory Exist    ${OUTPUT_DIR}${/}orders
-    IF    ${dir_exists}
-        Remove Directory    ${OUTPUT_DIR}${/}orders    recursive=True
-    END
-    ${dir_exists}=    Does Directory Exist    ${OUTPUT_DIR}${/}previews
-    IF    ${dir_exists}
-        Remove Directory    ${OUTPUT_DIR}${/}previews    recursive=True
-    END
-    ${archive_exists}=    Does File Exist    ${OUTPUT_DIR}${/}orders.zip
-    IF    ${archive_exists}
-        Remove File    ${OUTPUT_DIR}${/}orders.zip
-    END
-    Create Directory    ${OUTPUT_DIR}${/}orders    exist_ok=True
-    Create Directory    ${OUTPUT_DIR}${/}previews    exist_ok=True
+    myInit
     Open the robot order website    ${ASSETS}[target_url]
     ${orders}=    Get orders    ${ASSETS}[orderfile_url]
     Log    ${orders}
@@ -51,6 +36,22 @@ Order robots from RobotSpareBin Industries Inc
     [Teardown]    myTeardown
 
 *** Keywords ***
+myInit
+    ${dir_exists}=    Does Directory Exist    ${OUTPUT_DIR}${/}orders
+    IF    ${dir_exists}
+        Remove Directory    ${OUTPUT_DIR}${/}orders    recursive=True
+    END
+    ${dir_exists}=    Does Directory Exist    ${OUTPUT_DIR}${/}previews
+    IF    ${dir_exists}
+        Remove Directory    ${OUTPUT_DIR}${/}previews    recursive=True
+    END
+    ${file_exists}=    Does File Exist    ${OUTPUT_DIR}${/}orders.zip
+    IF    ${file_exists}
+        Remove File    ${OUTPUT_DIR}${/}orders.zip
+    END
+    Create Directory    ${OUTPUT_DIR}${/}orders    exist_ok=True
+    Create Directory    ${OUTPUT_DIR}${/}previews    exist_ok=True
+
 Open the robot order website
     [Arguments]    ${url}
     Open Available Browser    ${url}
