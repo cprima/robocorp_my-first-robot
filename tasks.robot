@@ -33,6 +33,9 @@ Order robots from RobotSpareBin Industries Inc
         Embed the robot screenshot to the receipt PDF file    ${screenshot}    ${pdf}
         Go to order another robot
     END
+    Create a ZIP file of the receipts
+    Close the browser
+    Log    ${OUTPUT_DIR}
     [Teardown]    myTeardown
 
 *** Keywords ***
@@ -119,7 +122,12 @@ Close the browser
     END
 
 myTeardown
-    Create a ZIP file of the receipts
-    Close the browser
-    Remove Directory    ${OUTPUT_DIR}${/}orders    recursive=True
-    Remove Directory    ${OUTPUT_DIR}${/}previews    recursive=True
+    Log    ${OUTPUT_DIR}
+    ${dir_exists}=    Does Directory Exist    ${OUTPUT_DIR}${/}orders
+    IF    ${dir_exists}
+        Remove Directory    ${OUTPUT_DIR}${/}orders    recursive=True
+    END
+    ${dir_exists}=    Does Directory Exist    ${OUTPUT_DIR}${/}previews
+    IF    ${dir_exists}
+        Remove Directory    ${OUTPUT_DIR}${/}previews    recursive=True
+    END
