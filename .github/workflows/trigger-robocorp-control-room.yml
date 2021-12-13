@@ -1,21 +1,23 @@
-name: Trigger a process in Control Room
+name: Upload to Control Room
 
 on:
   pull_request:
-    branches:
-      - main
-      - dev
+    types: [ closed ]
 
 jobs:
-  run-process:
+  upload-to-control-room:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-    name: Trigger process
+    name: Upload to Control Room
     steps:
-      - name: Trigger Control Room process run
-        uses: robocorp/action-trigger-process@v1
+      - uses: actions/checkout@master
+      - name: Use Node.js 12.x
+        uses: actions/setup-node@v1
         with:
-          api-key: ${{ secrets.ROBOCORP_WORKSPACE_KEY }}
+          node-version: 12.x
+      - name: Upload Robot to Control Room
+        uses: robocorp/action-upload-robot@v1
+        with:
+          workspace-key: ${{ secrets.ROBOCORP_WORKSPACE_KEY }}
           workspace-id: ${{ secrets.ROBOCORP_WORKSPACE_ID }}
-          process-id: ${{ secrets.ROBOCORP_PROCESS_ID }}
-          payload: '{"foo":"bar"}'
-          await-complete: true
+          robot-id: ${{ secrets.ROBOCORP_ROBOT_ID }}
