@@ -15,3 +15,6 @@ temp/
 testrun/*
 .~lock*
 *.pkl
+
+geckodriver.log
+output.xml
